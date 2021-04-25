@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+<form method="post" action="/member/login">
+    <table>
+        <tr>
+            <th>남은 휴가 일수</th>
+            <td th:text="${member.getRemainVacationCount()}">15</td>
+        </tr>
+        <tr>
+            <th>휴가 종류</th>
+            <td>
+                <select name="vacationType">
+                    <option value="1">연차</option>
+                    <option value="0.5">반차</option>
+                    <option value="0.25">반반차</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>암호</th>
+            <td>
+                <input type="password" name="password"/>
+            </td>
+        </tr>
+    </table>
+    <button type="submit">로그인</button>
+</form>
+<a href="/member/join">
+    <button type="button">회원가입</button>
+</a>
+</body>
+</html>
