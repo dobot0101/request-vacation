@@ -1,23 +1,32 @@
 package com.test.requestvacation.controller;
 
+import com.test.requestvacation.DTO.JoinForm;
+import com.test.requestvacation.DTO.LoginForm;
+import com.test.requestvacation.DTO.RequestVacationForm;
 import com.test.requestvacation.entity.Member;
+import com.test.requestvacation.entity.VacationRequest;
 import com.test.requestvacation.service.MemberService;
-import com.test.requestvacation.service.MemberVacationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 public class MemberController {
 
     private MemberService memberService;
-    private MemberVacationService memberVacationService;
 
-    public MemberController(MemberService memberService, MemberVacationService memberVacationService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.memberVacationService = memberVacationService;
     }
 
     @GetMapping("/member/join")
@@ -26,45 +35,101 @@ public class MemberController {
     }
 
     @PostMapping("/member/join")
-    public String create(@RequestParam String name, @RequestParam String email, @RequestParam String password) {
+    public String create(JoinForm joinForm) {
         Member member = new Member();
-        member.setEmail(email);
-        member.setName(name);
-        member.setPassword(password);
+        member.setEmail(joinForm.getEmail());
+        member.setName(joinForm.getName());
+        member.setPassword(joinForm.getPassword());
 
-        try {
-            memberService.join(member);
-            memberVacationService.insertVacationDays(member.getId());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        memberService.join(member);
+        memberService.initVacationDays(member.getId());
 
         return "redirect:/";
     }
 
+    @RequestMapping("/member/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        return "redirect:/";
+    }
+
     @PostMapping("/member/login")
-    public String login(String email, String password, Model model) {
-        Member member = memberService.login(email, password);
+    public String login(LoginForm loginForm, Model model, HttpServletRequest request) {
+        Member member = memberService.login(loginForm.getEmail(), loginForm.getPassword());
         if (member == null) {
             model.addAttribute("msg", "로그인에 실패했습니다. 로그인 정보를 확인해주세요.");
             return "home";
         } else {
-            int remainVacationDays = memberVacationService.getRemainVacationDays(member.getId());
-            if (remainVacationDays <= 0) {
-                model.addAttribute("msg", "남은 휴가가 없습니다.");
-                return "home";
-            }
+            HttpSession session = request.getSession();
+            session.setAttribute("memberName", member.getName());
+            session.setAttribute("memberId", member.getId());
 
-            model.addAttribute("remainVacationDays", remainVacationDays);
-            model.addAttribute("member", member);
-            return "requestVacation";
+//            return "vacationRequest";
+            return "home";
         }
     }
 
-    @PostMapping("/member/requestVacation")
-    public String requestVacation(RequestVacationForm requestVacationForm) {
-        // 연차 일수 계산
-        // 연차인 경우 기간 중 공휴일 빼고 계산
-        return "";
+    @GetMapping("/member/vacationRequest")
+    public String createForm(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        long memberId = (long)session.getAttribute("memberId");
+        int remainVacationDays = memberService.getRemainVacationDays(memberId);
+        if (remainVacationDays <= 0) {
+            model.addAttribute("msg", "남은 휴가가 없습니다.");
+            return "home";
+        }
+
+        model.addAttribute("remainVacationDays", remainVacationDays);
+//        model.addAttribute("member", member);
+
+        return "vacationRequest";
+    }
+
+    @PostMapping("/member/createVacation")
+    public String create(RequestVacationForm requestVacationForm, HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+        long memberId = (long)session.getAttribute("memberId");
+
+        VacationRequest vacationRequest = new VacationRequest();
+        vacationRequest.setMemberId(memberId);
+        vacationRequest.setComments(requestVacationForm.getComment());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = null;
+        Date endDate = null;
+
+        try {
+            startDate = dateFormat.parse(requestVacationForm.getStartDate());
+            endDate = dateFormat.parse(requestVacationForm.getEndDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (startDate != null) {
+            vacationRequest.setStartAt(startDate);
+        }
+
+        if (endDate != null) {
+            vacationRequest.setEndAt(endDate);
+        }
+
+        memberService.createVacation(vacationRequest);
+
+        return "redirect:/member/vacationList";
+    }
+
+    @GetMapping("/member/vacationList")
+    public String list(Long memberId, Model model) {
+        List<VacationRequest> list = memberService.findVacationRequests(memberId);
+        model.addAttribute("vacationList", list);
+        return "vacationList";
+    }
+
+    @PostMapping("/member/cancelVacation")
+    public String cancel(Long vacationId) {
+        memberService.cancelVacation(vacationId);
+        return "redirect:/member/vacationList";
     }
 }

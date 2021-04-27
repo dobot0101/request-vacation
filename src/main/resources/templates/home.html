@@ -5,29 +5,39 @@
     <title>로그인</title>
 </head>
 <body>
-<!--<input type="hidden" id="isLoggedIn" th:value="${isLoggedIn}"/>-->
 <input type="hidden" id="msg" th:value="${msg}"/>
-<form id="loginForm" method="post" action="/member/login">
-    <table>
-        <tr>
-            <th>이메일</th>
-            <td>
-                <input type="text" name="email" id="email"/>
-            </td>
-        </tr>
-        <tr>
-            <th>암호</th>
-            <td>
-                <input type="password" name="password" id="password"/>
-            </td>
-        </tr>
-    </table>
-</form>
-<div>
-    <button type="button" id="loginBtn">로그인</button>
-    <a href="/member/join">
-        <button type="button">회원가입</button>
+<div th:if="${session.memberId != null}">
+    <p th:text="${session.memberName} + '님 안녕하세요!'">손님 안녕하세요!</p>
+    <a href="/member/logout">
+        <button type="button">로그아웃</button>
     </a>
+    <a href="/member/vacationRequest">
+        <button type="button">휴가신청</button>
+    </a>
+</div>
+<div th:if="${session.memberId == null}">
+    <form id="loginForm" method="post" action="/member/login">
+        <table>
+            <tr>
+                <th>이메일</th>
+                <td>
+                    <input type="text" name="email" id="email"/>
+                </td>
+            </tr>
+            <tr>
+                <th>암호</th>
+                <td>
+                    <input type="password" name="password" id="password"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div>
+        <button type="button" id="loginBtn">로그인</button>
+        <a href="/member/join">
+            <button type="button">회원가입</button>
+        </a>
+    </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

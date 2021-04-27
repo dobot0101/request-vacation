@@ -1,14 +1,17 @@
 package com.test.requestvacation.entity;
 
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 
+@Table(name = "vacation_requests")
 @Entity
-public class VacationRequests {
+public class VacationRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

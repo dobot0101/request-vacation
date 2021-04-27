@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>휴가신청내역</title>
+</head>
+<body>
+<form id="cancelVacationForm" method="post" action="/member/cancelVacation">
+    <table id="userTable">
+        <thead>
+        <tr>
+            <th>시작일</th>
+            <th>종료일</th>
+            <th>사용일수</th>
+            <th>코멘트</th>
+            <th>취소여부</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="vacationRequest : ${list}">
+            <td th:text="${vacationRequest.startAt}">2021-04-27</td>
+            <td th:text="${vacationRequest.endAt}">2021-04-27</td>
+            <td th:text="${vacationRequest.useDay}">0</td>
+            <td th:text="${vacationRequest.comment}">코멘트</td>
+            <td th:text="${vacationRequest.isCancel}">N</td>
+            <td>
+                <button type="submit">취소</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+<div>
+    <a href="/">
+        <button type="button">로그인</button>
+    </a>
+</div>
+<script src="/js/vacationRequestList.js"></script>
+</body>
+</html>
