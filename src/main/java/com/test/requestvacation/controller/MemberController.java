@@ -1,16 +1,13 @@
 package com.test.requestvacation.controller;
 
 import com.test.requestvacation.entity.Member;
-import com.test.requestvacation.entity.MemberVacation;
 import com.test.requestvacation.service.MemberService;
 import com.test.requestvacation.service.MemberVacationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MemberController {
@@ -37,7 +34,7 @@ public class MemberController {
 
         try {
             memberService.join(member);
-            memberVacationService.initVacationDays(member.getId());
+            memberVacationService.insertVacationDays(member.getId());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -57,9 +54,17 @@ public class MemberController {
                 model.addAttribute("msg", "남은 휴가가 없습니다.");
                 return "home";
             }
+
             model.addAttribute("remainVacationDays", remainVacationDays);
             model.addAttribute("member", member);
             return "requestVacation";
         }
+    }
+
+    @PostMapping("/member/requestVacation")
+    public String requestVacation(RequestVacationForm requestVacationForm) {
+        // 연차 일수 계산
+        // 연차인 경우 기간 중 공휴일 빼고 계산
+        return "";
     }
 }

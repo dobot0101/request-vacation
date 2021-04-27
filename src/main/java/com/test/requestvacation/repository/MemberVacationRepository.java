@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberVacationRepository extends JpaRepository<MemberVacation, Long> {
-    Integer findByMemberId(Long memberId);
+    MemberVacation findByMemberId(Long memberId);
 }

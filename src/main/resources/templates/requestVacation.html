@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
+    <title>휴가신청</title>
 </head>
 <body>
-<form method="post" action="/member/login">
-    <table>
+<form id="requestVacationForm" method="post" action="/member/requestVacation">
+    <table class="vacation-request-table">
         <tr>
             <th>남은 휴가 일수</th>
-            <td th:text="${member.getRemainVacationCount()}">15</td>
+            <td th:text="${remainVacationDays}">15</td>
         </tr>
         <tr>
             <th>휴가 종류</th>
             <td>
-                <select name="vacationType">
+                <select name="vacationType" id="vacationType">
                     <option value="1">연차</option>
                     <option value="0.5">반차</option>
                     <option value="0.25">반반차</option>
@@ -22,16 +22,36 @@
             </td>
         </tr>
         <tr>
-            <th>암호</th>
+            <th>시작일자</th>
             <td>
-                <input type="password" name="password"/>
+                <input type="date" name="startDate" id="startDate"/>
+            </td>
+        </tr>
+        <tr>
+            <th>종료일자</th>
+            <td>
+                <input type="date" name="endDate" id="endDate"/>
+            </td>
+        </tr>
+        <tr>
+            <th>코멘트</th>
+            <td>
+                <input type="text" name="comment"/>
             </td>
         </tr>
     </table>
-    <button type="submit">로그인</button>
+
 </form>
-<a href="/member/join">
-    <button type="button">회원가입</button>
-</a>
+<div>
+    <button type="button" id="saveBtn">등록</button>
+    <a href="/">
+        <button type="button">로그인</button>
+    </a>
+    <a href="/member/join">
+        <button type="button">회원가입</button>
+    </a>
+</div>
+
+<script src="/js/requestVacation.js"></script>
 </body>
 </html>

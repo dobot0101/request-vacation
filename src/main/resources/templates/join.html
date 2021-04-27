@@ -5,29 +5,32 @@
     <title>회원가입</title>
 </head>
 <body>
-<form method="post" action="/member/join">
+<form id="joinForm" method="post" action="/member/join">
     <table>
         <tr>
             <th>이메일</th>
             <td>
-                <input type="text" name="email"/>
+                <input type="text" name="email" id="email"/>
             </td>
         </tr>
         <tr>
             <th>암호</th>
             <td>
-                <input type="password" name="password"/>
+                <input type="password" name="password" id="password"/>
             </td>
         </tr>
         <tr>
             <th>이름</th>
             <td>
-                <input type="text" name="name"/>
+                <input type="text" name="name" id="name"/>
             </td>
         </tr>
     </table>
-    <button type="submit">등록</button>
-    <a></a>
+    <button type="button" id="submitBtn">등록</button>
 </form>
+
+<script>
+
+</script>
 </body>
 </html>
