@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
+    <link th:href="@{/css/common.css}" rel="stylesheet" />
 </head>
 <body>
+<input th:if="${msg != null}" type="hidden" id="msg" th:value="${msg}" />
 <form id="joinForm" method="post" action="/member/join">
     <table>
+        <tr>
+            <th>이름</th>
+            <td>
+                <input type="text" name="name" id="name"/>
+            </td>
+        </tr>
         <tr>
             <th>이메일</th>
             <td>
@@ -19,18 +27,10 @@
                 <input type="password" name="password" id="password"/>
             </td>
         </tr>
-        <tr>
-            <th>이름</th>
-            <td>
-                <input type="text" name="name" id="name"/>
-            </td>
-        </tr>
     </table>
     <button type="button" id="submitBtn">등록</button>
 </form>
 
-<script>
-
-</script>
+<script src="/js/join.js"></script>
 </body>
 </html>

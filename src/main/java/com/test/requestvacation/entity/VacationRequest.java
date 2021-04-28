@@ -1,12 +1,9 @@
 package com.test.requestvacation.entity;
 
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Table(name = "vacation_requests")
@@ -23,6 +20,7 @@ public class VacationRequest {
     @Column(name = "start_at")
     private Date startAt;
 
+    @Nullable
     @Column(name = "end_at")
     private Date endAt;
 
@@ -34,6 +32,11 @@ public class VacationRequest {
 
     @Column(name = "is_cancel")
     private String isCancel;
+
+    @PrePersist
+    private void prePersist() {
+        this.isCancel = this.isCancel == null ? "N" : this.isCancel;
+    }
 
     public Long getId() {
         return id;

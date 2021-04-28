@@ -9,6 +9,7 @@ import com.test.requestvacation.repository.MemberRepository;
 import com.test.requestvacation.repository.MemberVacationRepository;
 import com.test.requestvacation.repository.VacationRequestRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -32,16 +33,35 @@ public class MemberService {
         this.vacationRequestRepository = vacationRequestRepository;
     }
 
+    /**
+     * 로그인
+     *
+     * @param email
+     * @param password
+     * @return
+     */
     public Member login(String email, String password) {
         return memberRepository.findByEmailAndPassword(email, password);
     }
 
+
+    /**
+     * 회원 가입
+     *
+     * @param member
+     * @return
+     */
     public Long join(Member member) {
         validateDuplicateMember(member);
         memberRepository.save(member);
         return member.getId();
     }
 
+    /**
+     * 회원 가입 시 중복 확인
+     *
+     * @param member
+     */
     private void validateDuplicateMember(Member member) {
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
@@ -56,17 +76,18 @@ public class MemberService {
      * @param memberId
      * @return
      */
-    public int getRemainVacationDays(Long memberId) {
+    public BigDecimal getRemainVacationDays(Long memberId) {
         MemberVacation memberVacation = memberVacationRepository.findByMemberId(memberId);
-        int vacationDays = memberVacation.getVacationDays();
 
-        int useVacationDays = 0;
-        VacationRequestsGroupBy vacationRequestsGroupBy = vacationRequestRepository.getTotalUsedVacationDays(memberId);
-        if (vacationRequestsGroupBy != null) {
-            useVacationDays = vacationRequestsGroupBy.getTotalUseDays();
+        BigDecimal vacationDays = memberVacation.getVacationDays();
+        BigDecimal useVacationDays = new BigDecimal(0);
+
+        List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByMemberId(memberId);
+        for (VacationRequest vacationRequest : vacationRequestList) {
+            useVacationDays = useVacationDays.add(vacationRequest.getUseDay());
         }
 
-        return vacationDays - useVacationDays;
+        return vacationDays.subtract(useVacationDays);
     }
 
     /**
@@ -82,7 +103,7 @@ public class MemberService {
         int year = calendar.get(Calendar.YEAR);
 
         memberVacation.setYear(year);
-        memberVacation.setVacationDays(15);
+        memberVacation.setVacationDays(new BigDecimal(15));
         memberVacationRepository.save(memberVacation);
     }
 
@@ -96,17 +117,32 @@ public class MemberService {
         return vacationRequestRepository.findAllByMemberId(memberId);
     }
 
-    public String createVacation(VacationRequest vacationRequest) {
-        // 공휴일 확인 및 휴가 사용일자 계산
+    /**
+     * 휴가 신청(저장)
+     *
+     * @param vacationRequest
+     * @return
+     */
+    public long createVacation(VacationRequest vacationRequest) {
+
+        // 연차 사용이면 시작일, 종료일 기준으로 실제 휴가 사용 개수 구함
         BigDecimal useDay = vacationRequest.getUseDay();
-        if (useDay.equals(1)) {
+        if (useDay.compareTo(new BigDecimal(1)) == 0) {
             useDay = new BigDecimal(getUseDayCountByTerm(vacationRequest));
             vacationRequest.setUseDay(useDay);
         }
 
-        return "";
+        vacationRequestRepository.save(vacationRequest);
+
+        return vacationRequest.getId();
     }
 
+    /**
+     * 휴가 기간 중 실제 차감되는 휴가 사용 개수 구하기
+     *
+     * @param vacationRequest
+     * @return
+     */
     private int getUseDayCountByTerm(VacationRequest vacationRequest) {
 
         int useDayCount = 0;
@@ -115,32 +151,18 @@ public class MemberService {
         Date endDate = vacationRequest.getEndAt();
 
         if (startDate != null && endDate != null) {
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            Calendar calendar1 = Calendar.getInstance();
+            Calendar calendar2 = Calendar.getInstance();
 
-            Date newStartDate = null;
-            Date newEndDate = null;
+            calendar1.setTime(startDate);
+            calendar2.setTime(endDate);
 
-            try {
-                newStartDate = dateFormat.parse(startDate.toString());
-                newEndDate = dateFormat.parse(endDate.toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            if (newStartDate != null && newEndDate != null) {
-                Calendar calendar1 = Calendar.getInstance();
-                Calendar calendar2 = Calendar.getInstance();
-
-                calendar1.setTime(newStartDate);
-                calendar2.setTime(newEndDate);
-
-                while (calendar1.compareTo(calendar2) != 1) {
-                    System.out.printf("%tF\n", calendar1.getTime());
-                    if (!HolidayUtil.isWeekendOrHoliday(calendar1.getTime())) {
-                        useDayCount++;
-                    }
-                    calendar1.add(Calendar.DATE, 1);
+            // 휴가 시작일, 종료일 사이의 날짜를을 하나씩 공휴일, 주말 여부 확인하여 실제 휴가 사용 개수 구함
+            while (calendar1.compareTo(calendar2) != 1) {
+                if (!HolidayUtil.isWeekendOrHoliday(calendar1.getTime())) {
+                    useDayCount++;
                 }
+                calendar1.add(Calendar.DATE, 1);
             }
         }
 
@@ -154,11 +176,22 @@ public class MemberService {
      * @param vacationId
      * @return
      */
-    public Long cancelVacation(Long vacationId) {
+    public boolean cancelVacation(Long vacationId) {
 
         VacationRequest vacationRequest = vacationRequestRepository.findById(vacationId).get();
-        vacationRequest.setIsCancel("Y");
-        vacationRequestRepository.save(vacationRequest);
-        return vacationId;
+
+        Date startDate = vacationRequest.getStartAt();
+        Date date = new Date();
+
+        if (startDate.compareTo(date) > 0) {
+            vacationRequest.setIsCancel("Y");
+            vacationRequestRepository.save(vacationRequest);
+        } else {
+            return false;
+        }
+
+        return true;
     }
+
+
 }

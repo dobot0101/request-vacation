@@ -7,19 +7,9 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String email;
     private String password;
     private String name;
-
-//    @Column(name = "remain_vacation_count")
-//    @ColumnDefault("15")
-//    private Integer remainVacationCount;
-
-//    @PrePersist
-//    private void prePersist() {
-//        this.remainVacationCount = this.remainVacationCount == null ? 0 : this.remainVacationCount;
-//    }
 
     public Long getId() {
         return id;
@@ -52,12 +42,4 @@ public class Member {
     public void setName(String name) {
         this.name = name;
     }
-
-//    public Integer getRemainVacationCount() {
-//        return remainVacationCount;
-//    }
-//
-//    public void setRemainVacationCount(Integer remainVacationCount) {
-//        this.remainVacationCount = remainVacationCount;
-//    }
 }

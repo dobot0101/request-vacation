@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>휴가신청내역</title>
+    <link th:href="@{/css/common.css}" rel="stylesheet" />
 </head>
 <body>
-<form id="cancelVacationForm" method="post" action="/member/cancelVacation">
-    <table id="userTable">
+
+<input id="msg" th:value="${msg}" type="hidden"/>
+
+<div th:if="${#lists.isEmpty(vacationList)}">
+    <p>휴가 내역이 없습니다.</p>
+</div>
+
+<form th:if="${not #lists.isEmpty(vacationList)}" id="cancelVacationForm" method="post" action="/member/cancelVacation">
+    <table>
         <thead>
         <tr>
             <th>시작일</th>
@@ -18,14 +26,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="vacationRequest : ${list}">
-            <td th:text="${vacationRequest.startAt}">2021-04-27</td>
-            <td th:text="${vacationRequest.endAt}">2021-04-27</td>
-            <td th:text="${vacationRequest.useDay}">0</td>
-            <td th:text="${vacationRequest.comment}">코멘트</td>
-            <td th:text="${vacationRequest.isCancel}">N</td>
+        <tr th:each="vacation : ${vacationList}">
+            <td th:text="${#dates.format(vacation.startAt, 'yyyy-MM-dd')}">yyyy-MM-dd</td>
+            <td th:text="${#dates.format(vacation.endAt, 'yyyy-MM-dd')}">yyyy-MM-dd</td>
+            <td th:text="${vacation.useDay}">0</td>
+            <td th:text="${vacation.comments}">코멘트</td>
+            <td th:text="${vacation.isCancel}">N</td>
             <td>
-                <button type="submit">취소</button>
+                <button th:if="${vacation.isCancel != 'Y'}" type="submit" name="vacationId" th:value="${vacation.id}">취소</button>
             </td>
         </tr>
         </tbody>
@@ -33,9 +41,16 @@
 </form>
 <div>
     <a href="/">
-        <button type="button">로그인</button>
+        <button type="button">홈으로</button>
     </a>
 </div>
-<script src="/js/vacationRequestList.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (document.getElementById('msg').value.length) {
+            alert(document.getElementById('msg').value);
+            window.location.replace('/member/vacationList');
+        }
+    });
+</script>
 </body>
 </html>

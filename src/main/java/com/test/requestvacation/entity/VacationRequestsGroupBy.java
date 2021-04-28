@@ -3,6 +3,7 @@ package com.test.requestvacation.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 
 @Entity
 public class VacationRequestsGroupBy {
@@ -12,7 +13,7 @@ public class VacationRequestsGroupBy {
     private Long memberId;
 
     @Column(name = "total_use_days")
-    private Integer totalUseDays;
+    private BigDecimal totalUseDays;
 
     public Long getMemberId() {
         return memberId;
@@ -22,11 +23,11 @@ public class VacationRequestsGroupBy {
         this.memberId = memberId;
     }
 
-    public Integer getTotalUseDays() {
+    public BigDecimal getTotalUseDays() {
         return totalUseDays;
     }
 
-    public void setTotalUseDays(Integer totalUseDays) {
+    public void setTotalUseDays(BigDecimal totalUseDays) {
         this.totalUseDays = totalUseDays;
     }
 }

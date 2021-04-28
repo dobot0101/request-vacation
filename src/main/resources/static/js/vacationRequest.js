@@ -11,6 +11,10 @@ function clickSaveBtn() {
     }
 }
 
+/**
+ * 휴가 등록 전 시작일, 종료일 입력 확인
+ * @returns {boolean}
+ */
 function validateSave() {
     if (!document.getElementById('startDate').value) {
         alert('시작일자를 확인하세요.');
@@ -29,6 +33,9 @@ function save() {
     document.getElementById('requestVacationForm').submit();
 }
 
+/**
+ * 연차 사용 시 종료일 입력 가능, 나머지는 종료일 입력 불가
+ */
 function changeVacationType() {
     var vacationType = document.getElementById('vacationType').value;
     if (vacationType === '1') {

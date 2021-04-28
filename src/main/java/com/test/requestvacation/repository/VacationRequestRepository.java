@@ -12,11 +12,12 @@ import java.util.List;
 @Repository
 public interface VacationRequestRepository extends JpaRepository<VacationRequest, Long> {
 
-    @Query(value = "select member_id, sum(use_day) as total_use_days from vacation_requests where member_id = :member_id", nativeQuery = true)
+    @Query(value = "select member_id, sum(use_day) as total_use_days from vacation_requests where member_id = :member_id group by member_id", nativeQuery = true)
     VacationRequestsGroupBy getTotalUsedVacationDays(@Param("member_id") Long memberId);
 
+//    @Query(value="select * from vacation_requests where member_id = :member_id and is_cancel <> 'Y'")
     List<VacationRequest> findAllByMemberId(Long memberId);
 
-    @Query(value = "update vacation_requests set is_cancel where id = :id", nativeQuery = true)
-    boolean cancelVacationById(@Param("id") Long vacationId);
+//    @Query(value = "update vacation_requests set is_cancel where id = :id", nativeQuery = true)
+//    boolean cancelVacationById(@Param("id") Long vacationId);
 }

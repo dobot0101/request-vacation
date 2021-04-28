@@ -1,6 +1,7 @@
 package com.test.requestvacation.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class MemberVacation {
@@ -15,7 +16,8 @@ public class MemberVacation {
     private Integer year;
 
     @Column(name = "vacation_days")
-    private Integer vacationDays;
+//    private Integer vacationDays;
+    private BigDecimal vacationDays;
 
     public Long getId() {
         return id;
@@ -41,11 +43,19 @@ public class MemberVacation {
         this.year = year;
     }
 
-    public Integer getVacationDays() {
+//    public Integer getVacationDays() {
+//        return vacationDays;
+//    }
+//
+//    public void setVacationDays(Integer vacationDays) {
+//        this.vacationDays = vacationDays;
+//    }
+
+    public BigDecimal getVacationDays() {
         return vacationDays;
     }
 
-    public void setVacationDays(Integer vacationDays) {
+    public void setVacationDays(BigDecimal vacationDays) {
         this.vacationDays = vacationDays;
     }
 }

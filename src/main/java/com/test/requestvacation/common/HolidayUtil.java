@@ -24,6 +24,8 @@ public class HolidayUtil {
         String yyyyMMdd = new SimpleDateFormat("yyyyMMdd").format(date);
 
         // 양력 공휴일 체크
+        // 1. 현재 년도와 양력 공휴(mmdd) 합차기
+        // 2. 파라미터로 받은 휴가일자와 비교
         String mmdd = yyyyMMdd.substring(4);
         for (String solarMMdd : solar) {
             if (solarMMdd.equals(mmdd)) {
@@ -32,6 +34,9 @@ public class HolidayUtil {
         }
 
         // 음력 공휴일 체크
+        // 1. 현재 년도와 음력 공휴일(mmdd)을 합치기
+        // 2. 합쳐진 년월일(yyyyMMdd)을 양력 일자로 변경
+        // 3. 파라미터로 받은 휴가일자와 비교
         String yyyy = yyyyMMdd.substring(0, 4);
         for (String lunarMMdd : lunar) {
             String lunarHoliday = convertLunarToSolar(yyyy + lunarMMdd);
@@ -101,7 +106,7 @@ public class HolidayUtil {
 
 
     /**
-     * 주말 (토,일)
+     * 주말 여부 확인 메서드
      *
      * @param date
      * @return

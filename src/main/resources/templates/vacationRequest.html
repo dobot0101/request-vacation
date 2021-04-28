@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>휴가신청</title>
+    <link th:href="@{/css/common.css}" rel="stylesheet" />
 </head>
 <body>
 <form id="requestVacationForm" method="post" action="/member/createVacation">
     <table class="vacation-request-table">
         <tr>
             <th>남은 휴가 일수</th>
-            <td th:text="${remainVacationDays}">15</td>
+            <td th:text="${remainVacationDays} + '일'">15일</td>
         </tr>
         <tr>
             <th>휴가 종류</th>
@@ -44,13 +45,6 @@
 </form>
 <div>
     <button type="button" id="saveBtn">등록</button>
-    <button type="button" id="backBtn">돌아가기</button>
-<!--    <a href="/member/login">-->
-<!--        <button type="button">로그인</button>-->
-<!--    </a>-->
-<!--    <a href="/member/join">-->
-<!--        <button type="button">회원가입</button>-->
-<!--    </a>-->
 </div>
 
 <script src="/js/vacationRequest.js"></script>
