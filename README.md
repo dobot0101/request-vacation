@@ -9,3 +9,6 @@
   - Spring Boot, Spring Data JPA, Thymeleaf, MySQL
 - Frontend
   - Javascirpt, HTML, CSS
+
+# 다음 예정 작업
+- Spring Security를 사용한 회원가입, 로그인/아웃 개발
