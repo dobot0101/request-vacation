@@ -4,7 +4,7 @@ import com.test.requestvacation.DTO.JoinForm;
 import com.test.requestvacation.DTO.LoginForm;
 import com.test.requestvacation.DTO.RequestVacationForm;
 import com.test.requestvacation.entity.Member;
-import com.test.requestvacation.entity.VacationRequest;
+import com.test.requestvacation.entity.MemberVacationUsage;
 import com.test.requestvacation.service.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -144,10 +143,10 @@ public class MemberController {
         long memberId = (long) session.getAttribute("memberId");
 
         // 휴가 신청 Form 으로 전달받은 값들을 DB에 저장하기 위해 Entity에 담기
-        VacationRequest vacationRequest = new VacationRequest();
-        vacationRequest.setMemberId(memberId);
-        vacationRequest.setComments(requestVacationForm.getComment());
-        vacationRequest.setUseDay(new BigDecimal(requestVacationForm.getVacationType()));
+        MemberVacationUsage memberVacationUsage = new MemberVacationUsage();
+        memberVacationUsage.setMemberId(memberId);
+        memberVacationUsage.setComments(requestVacationForm.getComment());
+        memberVacationUsage.setUseDay(new BigDecimal(requestVacationForm.getVacationType()));
 
 
         // 휴가시작일, 종료일을 Date 타입으로 변경하여 Entity에 담기
@@ -169,15 +168,15 @@ public class MemberController {
         }
 
         if (startDate != null) {
-            vacationRequest.setStartAt(startDate);
+            memberVacationUsage.setStartAt(startDate);
         }
 
         if (endDate != null) {
-            vacationRequest.setEndAt(endDate);
+            memberVacationUsage.setEndAt(endDate);
         }
 
         // 휴가 신청(생성)
-        memberService.createVacation(vacationRequest);
+        memberService.createVacation(memberVacationUsage);
 
         return "redirect:/member/vacationList";
     }
@@ -195,7 +194,7 @@ public class MemberController {
         HttpSession session = request.getSession();
         long memberId = (long) session.getAttribute("memberId");
 
-        List<VacationRequest> list = memberService.findVacationRequests(memberId);
+        List<MemberVacationUsage> list = memberService.findVacationRequests(memberId);
         model.addAttribute("vacationList", list);
 
         if (msg != null) {

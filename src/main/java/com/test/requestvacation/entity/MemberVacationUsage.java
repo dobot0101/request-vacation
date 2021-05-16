@@ -6,9 +6,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Table(name = "vacation_requests")
+@Table(name = "member_vacation_usage")
 @Entity
-public class VacationRequest {
+public class MemberVacationUsage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

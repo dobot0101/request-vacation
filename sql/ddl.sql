@@ -14,7 +14,7 @@ create table member_vacation
     year          int    not null default 0
 )
 
-create table vacation_requests
+create table member_vacation_usage
 (
     id        bigint  not null auto_increment primary key,
     member_id bigint  not null default 0,

@@ -1,12 +1,11 @@
-package com.test.requestvacation.entity;
+package com.test.requestvacation.DTO;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
-@Entity
-public class VacationRequestsGroupBy {
+//@Entity
+public class MemberVacationUsageGroupBy {
 
     @Id
     @Column(name = "member_id")

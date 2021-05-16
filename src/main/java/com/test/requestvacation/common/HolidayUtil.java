@@ -21,14 +21,14 @@ public class HolidayUtil {
             return true;
         }
 
-        String yyyyMMdd = new SimpleDateFormat("yyyyMMdd").format(date);
+        String yearMonthDay = new SimpleDateFormat("yyyyMMdd").format(date);
 
         // 양력 공휴일 체크
         // 1. 현재 년도와 양력 공휴(mmdd) 합차기
         // 2. 파라미터로 받은 휴가일자와 비교
-        String mmdd = yyyyMMdd.substring(4);
-        for (String solarMMdd : solar) {
-            if (solarMMdd.equals(mmdd)) {
+        String monthDay = yearMonthDay.substring(4);
+        for (String solarMonthDay : solar) {
+            if (solarMonthDay.equals(monthDay)) {
                 return true;
             }
         }
@@ -37,10 +37,10 @@ public class HolidayUtil {
         // 1. 현재 년도와 음력 공휴일(mmdd)을 합치기
         // 2. 합쳐진 년월일(yyyyMMdd)을 양력 일자로 변경
         // 3. 파라미터로 받은 휴가일자와 비교
-        String yyyy = yyyyMMdd.substring(0, 4);
-        for (String lunarMMdd : lunar) {
-            String lunarHoliday = convertLunarToSolar(yyyy + lunarMMdd);
-            if (yyyyMMdd.equals(lunarHoliday)) {
+        String year = yearMonthDay.substring(0, 4);
+        for (String lunarMonthDay : lunar) {
+            String lunarHoliday = convertLunarToSolar(year + lunarMonthDay);
+            if (yearMonthDay.equals(lunarHoliday)) {
                 return true;
             }
         }
@@ -51,7 +51,7 @@ public class HolidayUtil {
     /**
      * 양력 -> 음력 변환
      *
-     * @param 년월일(yyyyMMdd)
+     * @param date
      * @return 년월일(yyyyMMdd)
      */
     private static String convertSolarToLunar(String date) {
