@@ -13,17 +13,26 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-@Service
+//@Service
 public class MemberService {
     private MemberRepository memberRepository;
     private MemberVacationRepository memberVacationRepository;
     private MemberVacationUsageRepository memberVacationUsageRepository;
 
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
     public MemberService(MemberRepository memberRepository, MemberVacationRepository memberVacationRepository, MemberVacationUsageRepository memberVacationUsageRepository) {
         this.memberRepository = memberRepository;
         this.memberVacationRepository = memberVacationRepository;
         this.memberVacationUsageRepository = memberVacationUsageRepository;
+    }
+
+    public Optional<Member> findOne(Long memberId) {
+        return memberRepository.findById(memberId);
     }
 
     /**

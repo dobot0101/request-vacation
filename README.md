@@ -6,6 +6,6 @@
 
 # 사용 기술
 - Backend 
-  - Spring Boot, Spring Data JPA, Thymeleaf, MySQL
+  - Spring Boot, Spring Data JPA, Thymeleaf, MySQL, REST API, TDD
 - Frontend
   - Javascirpt, HTML, CSS
