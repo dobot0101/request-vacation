@@ -1,6 +1,5 @@
 # 설명
-- Java Spring Boot, Spring Data JPA, REST API 개발 학습, TDD 학습을 목적으로 개인 프로젝트를 시작하였습니다.
-- 회사 일이 바쁘지만 조금씩이라도 꾸준히 학습할 예정입니다.
+- Java Spring Boot, Spring Data JPA, REST API 개발 학습을 위해 시작한 개인 프로젝트입니다.
 
 # 사용 기술
 - Backend 
