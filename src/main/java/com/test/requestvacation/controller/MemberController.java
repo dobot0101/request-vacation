@@ -6,6 +6,8 @@ import com.test.requestvacation.DTO.RequestVacationForm;
 import com.test.requestvacation.entity.Member;
 import com.test.requestvacation.entity.MemberVacationUsage;
 import com.test.requestvacation.service.MemberService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +26,8 @@ import java.util.List;
 @Controller
 public class MemberController {
 
+    @Autowired
     private MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     /**
      * 회원 가입 페이지로 이동 요청
@@ -148,7 +147,6 @@ public class MemberController {
         memberVacationUsage.setComments(requestVacationForm.getComment());
         memberVacationUsage.setUseDay(new BigDecimal(requestVacationForm.getVacationType()));
 
-
         // 휴가시작일, 종료일을 Date 타입으로 변경하여 Entity에 담기
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = null;
@@ -180,7 +178,6 @@ public class MemberController {
 
         return "redirect:/member/vacationList";
     }
-
 
     /**
      * 휴가 내역 조회
@@ -216,10 +213,10 @@ public class MemberController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("redirect:/member/vacationList");
 
-//        url 뒤에 attribute 표시되지 않게 하려면 아래 코드 사용
-//        RedirectView rv = new RedirectView("/member/vacationList");
-//        rv.setExposeModelAttributes(false);
-//        mv.setView(rv);
+        // url 뒤에 attribute 표시되지 않게 하려면 아래 코드 사용
+        // RedirectView rv = new RedirectView("/member/vacationList");
+        // rv.setExposeModelAttributes(false);
+        // mv.setView(rv);
 
         if (!memberService.cancelVacation(vacationId)) {
             mv.addObject("msg", "이미 시작되어 취소할 수 없습니다.");

@@ -7,6 +7,8 @@ import com.test.requestvacation.entity.MemberVacationUsage;
 import com.test.requestvacation.repository.MemberRepository;
 import com.test.requestvacation.repository.MemberVacationRepository;
 import com.test.requestvacation.repository.MemberVacationUsageRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,20 +17,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-//@Service
+@Service
 public class MemberService {
     private MemberRepository memberRepository;
+
+    @Autowired
     private MemberVacationRepository memberVacationRepository;
+
+    @Autowired
     private MemberVacationUsageRepository memberVacationUsageRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-    }
-
-    public MemberService(MemberRepository memberRepository, MemberVacationRepository memberVacationRepository, MemberVacationUsageRepository memberVacationUsageRepository) {
-        this.memberRepository = memberRepository;
-        this.memberVacationRepository = memberVacationRepository;
-        this.memberVacationUsageRepository = memberVacationUsageRepository;
     }
 
     public Optional<Member> findOne(Long memberId) {
@@ -45,7 +45,6 @@ public class MemberService {
     public Member login(String email, String password) {
         return memberRepository.findByEmailAndPassword(email, password);
     }
-
 
     /**
      * 회원 가입
@@ -71,7 +70,6 @@ public class MemberService {
                 });
     }
 
-
     /**
      * 남은 휴가일수 구하기
      *
@@ -84,8 +82,10 @@ public class MemberService {
         BigDecimal vacationDays = memberVacation.getVacationDays();
         BigDecimal useVacationDays = new BigDecimal(0);
 
-//        List<MemberVacationUsage> memberVacationUsageList = memberVacationUsageRepository.findAllByMemberId(memberId);
-        List<MemberVacationUsage> memberVacationUsageList = memberVacationUsageRepository.findAllByMemberIdAndIsCancel( memberId, "N");
+        // List<MemberVacationUsage> memberVacationUsageList =
+        // memberVacationUsageRepository.findAllByMemberId(memberId);
+        List<MemberVacationUsage> memberVacationUsageList = memberVacationUsageRepository
+                .findAllByMemberIdAndIsCanceled(memberId, false);
         for (MemberVacationUsage memberVacationUsage : memberVacationUsageList) {
             useVacationDays = useVacationDays.add(memberVacationUsage.getUseDay());
         }
@@ -172,7 +172,6 @@ public class MemberService {
         return useDayCount;
     }
 
-
     /**
      * 휴가 취소
      *
@@ -187,7 +186,7 @@ public class MemberService {
         Date date = new Date();
 
         if (startDate.compareTo(date) > 0) {
-            vacationRequest.setIsCancel("Y");
+            vacationRequest.setIsCanceled(true);
             memberVacationUsageRepository.save(vacationRequest);
         } else {
             return false;
@@ -195,6 +194,5 @@ public class MemberService {
 
         return true;
     }
-
 
 }

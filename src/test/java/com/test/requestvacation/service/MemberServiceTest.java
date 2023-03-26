@@ -1,16 +1,21 @@
 package com.test.requestvacation.service;
 
-import com.test.requestvacation.entity.Member;
-import com.test.requestvacation.repository.MemberRepository;
-import com.test.requestvacation.repository.MemoryMemberRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assertions.*;
+import com.test.requestvacation.entity.Member;
+import com.test.requestvacation.repository.MemoryMemberRepository;
 
 public class MemberServiceTest {
-
+    @Autowired
     MemberService memberService;
+
+    @Autowired
     MemoryMemberRepository memberRepository;
 
     @BeforeEach
@@ -21,27 +26,23 @@ public class MemberServiceTest {
 
     @Test
     void 회원가입() {
-        // given
         Member member = new Member();
-        member.setEmail("lhl890@naver.com");
-        member.setPassword("dkagh");
+        member.setEmail("test@test.com");
+        member.setPassword("test");
         member.setName("dobot");
 
-        // when
         Long memberId = memberService.join(member);
 
-        // then
         Member findMember = memberService.findOne(memberId).get();
         assertThat(member.getName()).isEqualTo(findMember.getName());
     }
 
     @Test
     void 회원조회() {
-        // given
         Long memberId = 3L;
-        // when
-        Member member = memberService.findOne(memberId).get();
-        // then
-        assertThat(member).isNull();
+
+        Optional<Member> member = memberService.findOne(memberId);
+
+        assertThat(member).isEmpty();
     }
 }

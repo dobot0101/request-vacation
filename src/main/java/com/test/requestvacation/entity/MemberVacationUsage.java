@@ -1,10 +1,16 @@
 package com.test.requestvacation.entity;
 
-import org.springframework.lang.Nullable;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.lang.Nullable;
 
 @Table(name = "member_vacation_usage")
 @Entity
@@ -30,13 +36,8 @@ public class MemberVacationUsage {
     @Column(name = "comments")
     private String comments;
 
-    @Column(name = "is_cancel")
-    private String isCancel;
-
-    @PrePersist
-    private void prePersist() {
-        this.isCancel = this.isCancel == null ? "N" : this.isCancel;
-    }
+    @Column(name = "is_canceled")
+    private Boolean isCanceled = false;
 
     public Long getId() {
         return id;
@@ -86,11 +87,11 @@ public class MemberVacationUsage {
         this.comments = comments;
     }
 
-    public String getIsCancel() {
-        return isCancel;
+    public Boolean getIsCanceled() {
+        return isCanceled;
     }
 
-    public void setIsCancel(String isCancel) {
-        this.isCancel = isCancel;
+    public void setIsCanceled(Boolean isCanceled) {
+        this.isCanceled = isCanceled;
     }
 }

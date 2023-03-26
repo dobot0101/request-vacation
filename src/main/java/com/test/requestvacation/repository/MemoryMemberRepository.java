@@ -1,10 +1,15 @@
 package com.test.requestvacation.repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.context.annotation.Profile;
+
 import com.test.requestvacation.entity.Member;
-import org.springframework.data.domain.Example;
 
-import java.util.*;
-
+@Profile("test")
 public class MemoryMemberRepository implements MemberRepository {
     private static Map<Long, Member> store = new HashMap<>();
     private static long sequence = 0L;
@@ -18,9 +23,9 @@ public class MemoryMemberRepository implements MemberRepository {
 
     @Override
     public Member findByEmailAndPassword(String email, String password) {
-        ArrayList memberList = (ArrayList) store.values();
-        for (Object object: memberList) {
-            Member member = (Member)object;
+        ArrayList<Member> memberList = (ArrayList<Member>) store.values();
+        for (Object object : memberList) {
+            Member member = (Member) object;
             if (member.getEmail().equals(email) && member.getPassword().equals(password)) {
                 return member;
             }

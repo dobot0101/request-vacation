@@ -7,6 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RequestVacationApplication {
 
 	public static void main(String[] args) {
+		// SpringApplication app = new
+		// SpringApplication(RequestVacationApplication.class);
+		// app.setAdditionalProfiles("jpa");
+		// app.run(args);
 		SpringApplication.run(RequestVacationApplication.class, args);
 	}
 
